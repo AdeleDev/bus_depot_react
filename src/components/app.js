@@ -1,9 +1,7 @@
 // import { Routes, Route, Link,Switch,BrowserRouter as Router } from "react-router-dom";
-import { Routes, Route } from "react-router-dom"
-
 import HeaderComponent from './header';
 import FooterComponent from './footer';
-import Table from "./table";
+import Table from "./table/table";
 
 function App() {
     return (
