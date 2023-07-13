@@ -62,7 +62,7 @@ export function getColumns(getCommonEditTextFieldProps) {
                 }),
             },
             {
-                accessorKey: 'driverInfo',
+                accessorKey: 'driversInfo',
                 header: 'Bus drivers',
                 size: 80,
                 type: 'string',

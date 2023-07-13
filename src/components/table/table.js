@@ -8,7 +8,8 @@ import getErrorText from '../../utils/get-validation-error-text'
 import axios from "axios";
 import getServerErrorTextDescription from "../../utils/get-server-error-description";
 import {getColumns} from "./columns";
-
+import driversJsonToString from "../../utils/drivers-json-to-string"
+import stringToDriversJson from "../../utils/string-to-drivers-json";
 
 const BusInfo = () => {
         const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -23,6 +24,9 @@ const BusInfo = () => {
 
         function refreshBusList() {
             axios.get(URL).then(function (response) {
+                for (const row of response.data) {
+                    row['driversInfo'] = driversJsonToString(row['driversInfo'])
+                }
                 console.log(response.data);
                 setTableData(response.data)
             }).catch(function (error) {
@@ -31,6 +35,7 @@ const BusInfo = () => {
         }
 
         function addBusToList(values) {
+            values['driversInfo'] = stringToDriversJson(values['driversInfo'])
             return axios.post(URL, JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
             ).then(function (response) {
                 console.log(response.data);
@@ -46,6 +51,7 @@ const BusInfo = () => {
 
         async function updateBusInList(id, values) {
             values['id'] = id;
+            values['driversInfo'] = stringToDriversJson(values['driversInfo'])
             return axios.put(URL, JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
             ).then(function (response) {
                 console.log(response.data);

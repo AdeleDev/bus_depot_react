@@ -52,13 +52,13 @@ npm start
 Switch in terminal to folder where Dockerfile
 
 ```sh
-docker build . -t frontend-server  
+docker build . -t bus-depot-frontend
 ```
 
 Start without backend:
 
 ```sh
-docker run -d -p 3000:3000 --name  frontend-server bus-deport-frontend
+docker run -d -p 3000:3000 --name  frontend-server bus-depot-frontend
 ```
 Start with backend: set right path in docker compose for both images firstly
 
