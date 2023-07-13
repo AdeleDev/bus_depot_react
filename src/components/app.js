@@ -1,5 +1,5 @@
 // import { Routes, Route, Link,Switch,BrowserRouter as Router } from "react-router-dom";
-import {Routes} from 'react-router-dom'
+import { Routes, Route } from "react-router-dom"
 
 import HeaderComponent from './header';
 import FooterComponent from './footer';
@@ -11,13 +11,12 @@ function App() {
             <HeaderComponent/>
             <Table/>
             <div className="container mt-3">
-                <Routes>
-                    {/*<Route path="/" element={<BusList/>}/>*/}
-                    {/*<Route path="/buses" element={<BusList/>} />*/}
-                    {/*<Route path = "/addBus/:id" component = {CreateBusComponent}></Route>*/}
-                    {/*<Route path = "/buses/:id" component = {ViewBusComponent}></Route>*/}
-                    {/* <Route path = "/update-employee/:id" component = {UpdateEmployeeComponent}></Route> */}
-                </Routes>
+                {/*<Routes>*/}
+                {/*        <Route exact path="/" element={<Table/>}/>*/}
+                {/*        /!*<Route path="/create" element={<ProjectCreate/>}/>*!/*/}
+                {/*        /!*<Route path="/edit/:id" element={<ProjectEdit/>}/>*!/*/}
+                {/*        /!*<Route path="/show/:id" element={<ProjectShow/>}/>*!/*/}
+                {/*</Routes>*/}
             </div>
             <FooterComponent/>
         </div>

@@ -14,6 +14,7 @@ export const data: Person[] = [
         peopleAmount: 5,
         maintenanceDate: '2010-02-20',
         trip: 'Berlin-Stuttgart',
+        driverInfo: '1L,2L'
     },
     {
         regNumber: 'gtr45',
@@ -21,6 +22,7 @@ export const data: Person[] = [
         peopleAmount: 46,
         maintenanceDate: '2010-02-20',
         trip: 'Moscow-Helsinki',
+        driverInfo: '1L,2L'
     },
     {
         regNumber: 'q234567',

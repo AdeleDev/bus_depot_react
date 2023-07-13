@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {MaterialReactTable} from 'material-react-table';
 import {Box, Button, IconButton, MenuItem, Tooltip,} from '@mui/material';
 import {Delete, Edit} from '@mui/icons-material';
@@ -6,15 +6,86 @@ import {colors, data} from '../utils/make-data';
 import {CreateNewBusModal} from "./create-modal-window";
 import fieldValidation from "../utils/field-validation";
 import getErrorText from '../utils/get-validation-error-text'
+import axios from "axios";
+import {getBuses} from "../services/bus-service";
+
 
 const BusInfo = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [tableData, setTableData] = useState(() => data);
     const [validationErrors, setValidationErrors] = useState({});
 
+    useEffect(() => {
+        refreshBusList();
+        //addBusToList()
+        //updateBusInList()
+        //  deleteBusFromList()
+    }, [])
+
+    function refreshBusList() {
+        axios.get("http://localhost:8080/v1/buses").then(function (response) {
+            console.log(response.data);
+            setTableData(response.data)
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+
+
+                // setTableData(getBuses)
+
+    }
+
+
+    function addBusToList() {
+        const test = JSON.stringify({
+            // driversInfo: "{1L}",
+            number: "test2",
+            color: "green",
+            peopleAmount: 4,
+            maintenanceDate: "2012-01-01T00:00:00.000+00:00",
+            trip: "qqq"
+        })
+        axios.post("http://localhost:8080/v1/buses", test).then(function (response) {
+            console.log(response.data);
+        })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+
+    function updateBusInList() {
+        const test = JSON.stringify({
+            id: 3,
+            // driversInfo: "{1L}",
+            number: "test",
+            color: "yellow",
+            peopleAmount: 4,
+            maintenanceDate: "2012-01-01T00:00:00.000+00:00",
+            trip: "qqq"
+        })
+        axios.put("http://localhost:8080/v1/buses", test).then(function (response) {
+            console.log(response.data);
+        })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+
+    function deleteBusFromList() {
+        axios.delete("http://localhost:8080/v1/buses/3").then(function (response) {
+            console.log(response.data);
+        })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+
     const handleCreateNewRow = (values, setValues) => {
         if (!Object.keys(validationErrors).length) {
-            console.log(values)
             //send/receive api updates here, then refetch or update local table data for re-render
             tableData.push(values);
             setTableData([...tableData]);
@@ -25,6 +96,19 @@ const BusInfo = () => {
                 }, {}),)
         }
     };
+
+    // const handleCreateNewRow = (values, setValues) => {
+    //     if (!Object.keys(validationErrors).length) {
+    //         //send/receive api updates here, then refetch or update local table data for re-render
+    //         tableData.push(values);
+    //         setTableData([...tableData]);
+    //         setValues(() =>
+    //             columns.reduce((acc, column) => {
+    //                 acc[column.accessorKey ?? ''] = '';
+    //                 return acc;
+    //             }, {}),)
+    //     }
+    // };
 
     const handleSaveRowEdits = async ({exitEditingMode, row, values}) => {
         if (!Object.keys(validationErrors).length) {
@@ -128,6 +212,16 @@ const BusInfo = () => {
             {
                 accessorKey: 'trip',
                 header: 'Bus trip',
+                size: 80,
+                type: 'string',
+                muiTableBodyCellEditTextFieldProps: ({cell}) => ({
+                    ...getCommonEditTextFieldProps(cell),
+                    type: 'string',
+                }),
+            },
+            {
+                accessorKey: 'driverInfo',
+                header: 'Bus drivers',
                 size: 80,
                 type: 'string',
                 muiTableBodyCellEditTextFieldProps: ({cell}) => ({
