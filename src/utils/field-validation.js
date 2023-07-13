@@ -12,6 +12,6 @@ export default function fieldValidation(id, value) {
         ? validatePeopleAmount(value)
         : id === 'maintenanceDate' ? validateMaintananceDate(value)
             : id === 'trip' ? validateTrip(value)
-                : id === 'regNumber' || id === 'color' ? validateRequired(value) : true;
+                : id === 'number' || id === 'color' ? validateRequired(value) : true;
 
 }

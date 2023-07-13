@@ -7,7 +7,7 @@ export default function getErrorText(column) {
             return `Date cannot be before 2010 or more than current date`
         case 'trip':
             return `Value between 1 and 200 is required`
-        case 'regNumber':
+        case 'number':
             return 'Required value'
         case 'color':
             return 'Required value'

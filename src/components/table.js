@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {MaterialReactTable} from 'material-react-table';
 import {Box, Button, IconButton, MenuItem, Tooltip,} from '@mui/material';
 import {Delete, Edit} from '@mui/icons-material';
-import {colors, data} from '../utils/make-data';
+import {colors} from '../utils/make-data';
 import {CreateNewBusModal} from "./create-modal-window";
 import fieldValidation from "../utils/field-validation";
 import getErrorText from '../utils/get-validation-error-text'
@@ -12,14 +12,11 @@ import {getBuses} from "../services/bus-service";
 
 const BusInfo = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false);
-    const [tableData, setTableData] = useState(() => data);
+    const [tableData, setTableData] = useState({});
     const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
         refreshBusList();
-        //addBusToList()
-        //updateBusInList()
-        //  deleteBusFromList()
     }, [])
 
     function refreshBusList() {
@@ -29,93 +26,91 @@ const BusInfo = () => {
         }).catch(function (error) {
             console.log(error);
         });
-
-
-
-                // setTableData(getBuses)
-
     }
 
-
-    function addBusToList() {
-        const test = JSON.stringify({
-            // driversInfo: "{1L}",
-            number: "test2",
-            color: "green",
-            peopleAmount: 4,
-            maintenanceDate: "2012-01-01T00:00:00.000+00:00",
-            trip: "qqq"
-        })
-        axios.post("http://localhost:8080/v1/buses", test).then(function (response) {
+    function addBusToList(values) {
+        console.log(JSON.stringify(values))
+        return axios.post("http://localhost:8080/v1/buses", JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
+        ).then(function (response) {
             console.log(response.data);
-        })
-            .catch(function (error) {
-                console.log(error);
-            });
-
+            return true
+        }).catch(function (error) {
+            console.log(error.message);
+            setValidationErrors({
+                ...validationErrors,
+                ['server']: error.message
+            })
+            return false
+        });
     }
 
-    function updateBusInList() {
-        const test = JSON.stringify({
-            id: 3,
-            // driversInfo: "{1L}",
-            number: "test",
-            color: "yellow",
-            peopleAmount: 4,
-            maintenanceDate: "2012-01-01T00:00:00.000+00:00",
-            trip: "qqq"
-        })
-        axios.put("http://localhost:8080/v1/buses", test).then(function (response) {
+    async function updateBusInList(id, values) {
+        values['id'] = id;
+        console.log(JSON.stringify(values))
+        return axios.put("http://localhost:8080/v1/buses", JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
+        ).then(function (response) {
             console.log(response.data);
-        })
-            .catch(function (error) {
-                console.log(error);
-            });
+            return true
+        }).catch(function (error) {
+            console.log(error.message);
+            setValidationErrors({
+                ...validationErrors,
+                ['server']: error.message
+            })
+            return false
+        });
     }
 
-
-    function deleteBusFromList() {
-        axios.delete("http://localhost:8080/v1/buses/3").then(function (response) {
+    async function deleteBusFromList(id) {
+        return axios.delete("http://localhost:8080/v1/buses/" + id).then(function (response) {
             console.log(response.data);
-        })
-            .catch(function (error) {
-                console.log(error);
-            });
+            return true
+        }).catch(function (error) {
+            console.log(error.message);
+            setValidationErrors({
+                ...validationErrors,
+                ['server']: error.message
+            })
+            return false
+        });
     }
 
-
-    const handleCreateNewRow = (values, setValues) => {
+    const handleCreateNewRow = async (values, setValues) => {
+        clearServerError()
         if (!Object.keys(validationErrors).length) {
             //send/receive api updates here, then refetch or update local table data for re-render
-            tableData.push(values);
-            setTableData([...tableData]);
-            setValues(() =>
-                columns.reduce((acc, column) => {
-                    acc[column.accessorKey ?? ''] = '';
-                    return acc;
-                }, {}),)
+            const success = await addBusToList(values)
+            if (success) {
+                clearServerError()
+                tableData.push(values);
+                setTableData([...tableData]);
+                setValues(() =>
+                    columns.reduce((acc, column) => {
+                        acc[column.accessorKey ?? ''] = '';
+                        return acc;
+                    }, {}),)
+            }
         }
     };
 
-    // const handleCreateNewRow = (values, setValues) => {
-    //     if (!Object.keys(validationErrors).length) {
-    //         //send/receive api updates here, then refetch or update local table data for re-render
-    //         tableData.push(values);
-    //         setTableData([...tableData]);
-    //         setValues(() =>
-    //             columns.reduce((acc, column) => {
-    //                 acc[column.accessorKey ?? ''] = '';
-    //                 return acc;
-    //             }, {}),)
-    //     }
-    // };
+    function clearServerError() {
+        delete validationErrors['server']
+        setValidationErrors({
+            ...validationErrors
+        })
+    }
 
     const handleSaveRowEdits = async ({exitEditingMode, row, values}) => {
+        clearServerError()
         if (!Object.keys(validationErrors).length) {
-            tableData[row.index] = values;
-            //send/receive api updates here, then refetch or update local table data for re-render
-            setTableData([...tableData]);
-            exitEditingMode(); //required to exit editing mode and close modal
+            const success = await updateBusInList(row.original.id, values)
+            console.log(success)
+            if (success) {
+                clearServerError()
+                tableData[row.index] = values;
+                setTableData([...tableData]);
+                exitEditingMode(); //required to exit editing mode and close modal
+            }
         }
     };
 
@@ -124,7 +119,7 @@ const BusInfo = () => {
     };
 
     const handleDeleteRow = useCallback(
-        (row) => {
+        async (row) => {
             if (
                 // eslint-disable-next-line no-restricted-globals
                 !confirm(`Are you sure you want to delete ${row.getValue('number')}`)
@@ -132,8 +127,13 @@ const BusInfo = () => {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            tableData.splice(row.index, 1);
-            setTableData([...tableData]);
+            console.log(row)
+            const success = await deleteBusFromList(row.original.id)
+            if (success) {
+                clearServerError()
+                tableData.splice(row.index, 1);
+                setTableData([...tableData]);
+            }
         },
         [tableData],
     );
@@ -166,7 +166,7 @@ const BusInfo = () => {
     const columns = useMemo(
         () => [
             {
-                accessorKey: 'regNumber',
+                accessorKey: 'number',
                 header: 'Registration number',
                 enableColumnOrdering: false,
                 size: 80,
@@ -266,6 +266,17 @@ const BusInfo = () => {
                         </Tooltip>
                     </Box>
                 )}
+                state={{
+                    showAlertBanner: !!validationErrors['server']
+                }}
+                muiToolbarAlertBannerProps={
+                    !!validationErrors['server']
+                        ? {
+                            color: 'error',
+                            children: validationErrors['server'],
+                        }
+                        : undefined
+                }
                 renderTopToolbarCustomActions={() => (
                     <Button
                         style={{
