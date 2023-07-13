@@ -82,7 +82,6 @@ const BusInfo = () => {
             clearServerError()
             if (!Object.keys(validationErrors).length) {
                 if (await addBusToList(values)) {
-                    console.log("2312321")
                     clearServerError()
                     refreshBusList()
                     setValues(() =>

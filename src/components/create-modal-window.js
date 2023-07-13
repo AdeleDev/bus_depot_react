@@ -14,7 +14,7 @@ export const CreateNewBusModal = ({open, columns, onClose, onSubmit}) => {
         const [validationErrors, setValidationErrors] = useState({});
 
 
-        const handleSubmit = () => {
+        const handleSubmit = async () => {
             let validation = true
             let errors = {}
             for (const [key, value] of Object.entries(values)) {
@@ -25,8 +25,7 @@ export const CreateNewBusModal = ({open, columns, onClose, onSubmit}) => {
                 validation &= isValid
             }
             if (validation) {
-                const success = onSubmit(values, setValues);
-                if (success) {
+                if (await onSubmit(values, setValues)) {
                     onClose();
                 }
             } else {
@@ -37,23 +36,13 @@ export const CreateNewBusModal = ({open, columns, onClose, onSubmit}) => {
         };
 
         const handleCancel = () => {
-            let errors = {}
-            for (const [key] of Object.entries(values)) {
-
-                errors[key] = getErrorText(key)
-
-            }
             onClose();
             setValues(() =>
                 columns.reduce((acc, column) => {
                     acc[column.accessorKey ?? ''] = '';
                     return acc;
                 }, {}),)
-            setValidationErrors({
-                ...errors
-            })
-
-
+            setValidationErrors({})
         };
 
 
