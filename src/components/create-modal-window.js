@@ -25,8 +25,10 @@ export const CreateNewBusModal = ({open, columns, onClose, onSubmit}) => {
                 validation &= isValid
             }
             if (validation) {
-                onSubmit(values, setValues);
-                onClose();
+                const success = onSubmit(values, setValues);
+                if (success) {
+                    onClose();
+                }
             } else {
                 setValidationErrors({
                     ...errors
@@ -102,7 +104,11 @@ export const CreateNewBusModal = ({open, columns, onClose, onSubmit}) => {
                         </form>
                         <DialogActions sx={{p: '1.25rem'}}>
                             <Button onClick={handleCancel}>Cancel</Button>
-                            <Button color="secondary" onClick={handleSubmit} variant="contained">
+                            <Button style={{
+                                backgroundColor: "#12445e",
+                                padding: "12px 26px",
+                            }}
+                                    color="secondary" onClick={handleSubmit} variant="contained">
                                 Create New Bus
                             </Button>
                         </DialogActions>

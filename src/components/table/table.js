@@ -82,6 +82,7 @@ const BusInfo = () => {
             clearServerError()
             if (!Object.keys(validationErrors).length) {
                 if (await addBusToList(values)) {
+                    console.log("2312321")
                     clearServerError()
                     refreshBusList()
                     setValues(() =>
@@ -89,8 +90,10 @@ const BusInfo = () => {
                             acc[column.accessorKey ?? ''] = '';
                             return acc;
                         }, {}),)
+                    return true
                 }
             }
+            return false
         };
 
         function clearServerError() {
