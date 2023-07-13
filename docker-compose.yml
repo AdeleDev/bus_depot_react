@@ -1,0 +1,16 @@
+version: '2'
+services:
+  backend:
+    container_name: backend-server
+    image: bus-deport-backend:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - db:/data
+  frontend:
+    container_name: frontend-server
+    image: bus-deport-frontend:latest
+    ports:
+      - "3000:80"
+volumes:
+  db:
