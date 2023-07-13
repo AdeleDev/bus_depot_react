@@ -77,8 +77,7 @@ const BusInfo = () => {
             if (!Object.keys(validationErrors).length) {
                 if (await addBusToList(values)) {
                     clearServerError()
-                    tableData.push(values);
-                    setTableData([...tableData]);
+                    refreshBusList()
                     setValues(() =>
                         columns.reduce((acc, column) => {
                             acc[column.accessorKey ?? ''] = '';
@@ -100,8 +99,7 @@ const BusInfo = () => {
             if (!Object.keys(validationErrors).length) {
                 if (await updateBusInList(row.original.id, values)) {
                     clearServerError()
-                    tableData[row.index] = values;
-                    setTableData([...tableData]);
+                    refreshBusList()
                     exitEditingMode(); //required to exit editing mode and close modal
                 }
             }
@@ -121,8 +119,7 @@ const BusInfo = () => {
                 }
                 if (await deleteBusFromList(row.original.id)) {
                     clearServerError()
-                    tableData.splice(row.index, 1);
-                    setTableData([...tableData]);
+                    refreshBusList()
                 }
             },
             [tableData],
