@@ -10,18 +10,24 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { data, colors } from './makeData';
-import {CreateNewAccountModal} from "../create-modal-window/create-modal-window";
+import {CreateNewBusModal} from "../create-modal-window/create-modal-window";
 
 const BusInfo = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [tableData, setTableData] = useState(() => data);
     const [validationErrors, setValidationErrors] = useState({});
 
-    const handleCreateNewRow = (values) => {
+    const handleCreateNewRow = (values, setValues) => {
         if (!Object.keys(validationErrors).length) {
+            console.log(values)
             //send/receive api updates here, then refetch or update local table data for re-render
             tableData.push(values);
             setTableData([...tableData]);
+            setValues(() =>
+                columns.reduce((acc, column) => {
+                    acc[column.accessorKey ?? ''] = '';
+                    return acc;
+                }, {}),)
         }
     };
 
@@ -175,6 +181,7 @@ const BusInfo = () => {
                 editingMode="modal" //default
                 enableColumnOrdering
                 enableEditing
+                enablePagination={false}
                 onEditingRowSave={handleSaveRowEdits}
                 onEditingRowCancel={handleCancelRowEdits}
                 renderRowActions={({ row, table }) => (
@@ -204,7 +211,7 @@ const BusInfo = () => {
                     </Button>
                 )}
             />
-            <CreateNewAccountModal
+            <CreateNewBusModal
                 columns={columns}
                 open={createModalOpen}
                 onClose={() => setCreateModalOpen(false)}
