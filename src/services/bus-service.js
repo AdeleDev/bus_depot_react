@@ -23,22 +23,6 @@ class BusService {
     getBusById(busId) {
         return axios.get(BUS_API_BASE_URL + '/' + busId);
     }
-
-    getBusesByPeopleAmount() {
-        return axios.get(BUS_API_BASE_URL + '/findByPeopleAmount');
-
-    }
-
-    getBusesByTrip() {
-        return axios.get(BUS_API_BASE_URL + '/findByTrip');
-
-    }
-
-    //todo nedded?
-    getBusesDrivers(busId) {
-        return axios.get(BUS_API_BASE_URL + '/' + busId + '/getDrivers');
-
-    }
 }
 
 export default new BusService()

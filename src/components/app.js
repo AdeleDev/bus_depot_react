@@ -1,10 +1,9 @@
 // import { Routes, Route, Link,Switch,BrowserRouter as Router } from "react-router-dom";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import {Routes} from 'react-router-dom'
 
-import './app.css';
-import HeaderComponent from '../header/header';
-import FooterComponent from '../footer/footer';
-import Table from "../table/table";
+import HeaderComponent from './header';
+import FooterComponent from './footer';
+import Table from "./table";
 
 function App() {
     return (

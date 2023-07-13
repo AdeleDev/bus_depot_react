@@ -1,16 +1,11 @@
-import './table.css'
-import React, { useCallback, useMemo, useState } from 'react';
-import { MaterialReactTable } from 'material-react-table';
-import {
-    Box,
-    Button,
-    IconButton,
-    MenuItem,
-    Tooltip,
-} from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
-import { data, colors } from './makeData';
-import {CreateNewBusModal} from "../create-modal-window/create-modal-window";
+import React, {useCallback, useMemo, useState} from 'react';
+import {MaterialReactTable} from 'material-react-table';
+import {Box, Button, IconButton, MenuItem, Tooltip,} from '@mui/material';
+import {Delete, Edit} from '@mui/icons-material';
+import {colors, data} from '../utils/make-data';
+import {CreateNewBusModal} from "./create-modal-window";
+import fieldValidation from "../utils/field-validation";
+import getErrorText from '../utils/get-validation-error-text'
 
 const BusInfo = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -31,7 +26,7 @@ const BusInfo = () => {
         }
     };
 
-    const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
+    const handleSaveRowEdits = async ({exitEditingMode, row, values}) => {
         if (!Object.keys(validationErrors).length) {
             tableData[row.index] = values;
             //send/receive api updates here, then refetch or update local table data for re-render
@@ -59,33 +54,13 @@ const BusInfo = () => {
         [tableData],
     );
 
-    function getErrorText(column) {
-        // eslint-disable-next-line default-case
-        switch (column) {
-            case 'peopleAmount':
-                return `Value between 4 and 72 is required`
-            case 'maintenanceDate':
-                return `Date cannot be before 2010 or more than current date`
-            case 'trip':
-                return `Value between 1 and 200 is required`
-        }
-    }
-
-    function validationSchema(id, value) {
-        return id === 'peopleAmount'
-            ? validatePeopleAmount(value)
-            : id === 'maintenanceDate'? validateMaintananceDate(value)
-                :id === 'trip'? validateTrip(value)
-                    :validateRequired(value);
-    }
-
     const getCommonEditTextFieldProps = useCallback(
         (cell) => {
             return {
                 error: !!validationErrors[cell.id],
                 helperText: validationErrors[cell.id],
                 onBlur: (event) => {
-                    const isValid = validationSchema(cell.column.id, event.target.value)
+                    const isValid = fieldValidation(cell.column.id, event.target.value)
 
                     if (!isValid) {
                         setValidationErrors({
@@ -112,7 +87,7 @@ const BusInfo = () => {
                 enableColumnOrdering: false,
                 size: 80,
                 type: 'string',
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                muiTableBodyCellEditTextFieldProps: ({cell}) => ({
                     ...getCommonEditTextFieldProps(cell),
                     type: 'string',
                 }),
@@ -135,7 +110,7 @@ const BusInfo = () => {
                 header: 'Amount of passengers',
                 size: 140,
                 type: 'number',
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                muiTableBodyCellEditTextFieldProps: ({cell}) => ({
                     ...getCommonEditTextFieldProps(cell),
                     type: 'number',
                 }),
@@ -145,7 +120,7 @@ const BusInfo = () => {
                 accessorKey: 'maintenanceDate',
                 header: 'Date of maintenance',
                 type: 'date',
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                muiTableBodyCellEditTextFieldProps: ({cell}) => ({
                     ...getCommonEditTextFieldProps(cell),
                     type: 'date',
                 }),
@@ -155,14 +130,13 @@ const BusInfo = () => {
                 header: 'Bus trip',
                 size: 80,
                 type: 'string',
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+                muiTableBodyCellEditTextFieldProps: ({cell}) => ({
                     ...getCommonEditTextFieldProps(cell),
                     type: 'string',
                 }),
             },
         ],
-            [getCommonEditTextFieldProps],
-
+        [getCommonEditTextFieldProps],
     );
 
     return (
@@ -184,16 +158,16 @@ const BusInfo = () => {
                 enablePagination={false}
                 onEditingRowSave={handleSaveRowEdits}
                 onEditingRowCancel={handleCancelRowEdits}
-                renderRowActions={({ row, table }) => (
-                    <Box className="actions">
+                renderRowActions={({row, table}) => (
+                    <Box sx={{display: 'flex', gap: '1rem'}}>
                         <Tooltip arrow placement="left" title="Edit">
                             <IconButton onClick={() => table.setEditingRow(row)}>
-                                <Edit />
+                                <Edit/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip arrow placement="right" title="Delete">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                <Delete />
+                                <Delete/>
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -220,15 +194,4 @@ const BusInfo = () => {
         </>
     );
 };
-
-
-
-const validateRequired = (value) => !!value.length;
-const validatePeopleAmount = (amount: number) => amount >= 4 && amount <= 72;
-const validateMaintananceDate = (maintenanceDate: string) => {
-    return new Date(maintenanceDate).getTime() >= new Date('01/01/2010').getTime() &&
-        new Date(maintenanceDate).getTime() <= new Date().getTime();
-}
-const validateTrip = (trip: string) => trip.length>=1 && trip.length<=200;
-
 export default BusInfo;
