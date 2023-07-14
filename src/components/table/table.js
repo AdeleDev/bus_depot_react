@@ -35,8 +35,9 @@ const BusInfo = () => {
         }
 
         function addBusToList(values) {
-            values['driversInfo'] = stringToDriversJson(values['driversInfo'])
-            return axios.post(URL, JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
+            let busObject = Object.assign({}, values)
+            busObject['driversInfo'] = stringToDriversJson(values['driversInfo'])
+            return axios.post(URL, JSON.stringify(busObject), {headers: {"Content-Type": "application/json"}}
             ).then(function (response) {
                 console.log(response.data);
                 return true
@@ -50,9 +51,10 @@ const BusInfo = () => {
         }
 
         async function updateBusInList(id, values) {
-            values['id'] = id;
-            values['driversInfo'] = stringToDriversJson(values['driversInfo'])
-            return axios.put(URL, JSON.stringify(values), {headers: {"Content-Type": "application/json"}}
+            let busObject = Object.assign({}, values)
+            busObject['id'] = id;
+            busObject['driversInfo'] = stringToDriversJson(values['driversInfo'])
+            return axios.put(URL, JSON.stringify(busObject), {headers: {"Content-Type": "application/json"}}
             ).then(function (response) {
                 console.log(response.data);
                 return true
