@@ -1,5 +1,6 @@
 # Bus Depot React App
-Bus Depot CRUD Application on React. 
+Bus Depot CRUD Application on React.
+Grid layout build with React Material UI and Material React Table
 Working in pair with [Backend React App](https://github.com/AdeleDev/bus_depot_app).
 
 
