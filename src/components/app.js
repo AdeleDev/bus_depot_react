@@ -9,12 +9,6 @@ function App() {
             <HeaderComponent/>
             <Table/>
             <div className="container mt-3">
-                {/*<Routes>*/}
-                {/*        <Route exact path="/" element={<Table/>}/>*/}
-                {/*        /!*<Route path="/create" element={<ProjectCreate/>}/>*!/*/}
-                {/*        /!*<Route path="/edit/:id" element={<ProjectEdit/>}/>*!/*/}
-                {/*        /!*<Route path="/show/:id" element={<ProjectShow/>}/>*!/*/}
-                {/*</Routes>*/}
             </div>
             <FooterComponent/>
         </div>
